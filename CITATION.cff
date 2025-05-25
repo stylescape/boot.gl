@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+title: boot.gl
+version: 0.1.11
+date-released: 2024-07-01
+url: "https://github.com/stylescape/boot.gl"
+repository-code: "https://github.com/stylescape/boot.gl"
+
+license: MIT
+license-url: "https://github.com/stylescape/boot.gl/LICENSE"
+
+message: >-
+  If you use boot.gl in your work, please cite it using the metadata from this file.
+
+type: software
+
+authors:
+  - given-names: Lars Bastiaan
+    family-names: van Vianen
+    email: lars@scape.agency
+    affiliation: Scape Agency
+    orcid: "https://orcid.org/0000-0002-8790-8630"
+
+keywords:
+  - responsive design
+  - SCSS
+  - web development
+  - design toolkit
+  - fluid typography
