@@ -35,7 +35,7 @@ async function runKist(server) {
     const { stdout, stderr } = await execAsync('npx kist --config ./kist.yml');
     if (stdout) console.log('[Kist] stdout:', stdout);
     if (stderr) console.error('[Kist] stderr:', stderr);
-    console.log('[Kist] ✅ Build complete');
+    console.log('[Kist] Build complete');
 
     setTimeout(() => {
         server?.ws.send({
@@ -45,7 +45,7 @@ async function runKist(server) {
     }, 200);
 
   } catch (err) {
-    console.error('[Kist] ❌ Build failed:', err.stderr || err.message);
+    console.error('[Kist] Build failed:', err.stderr || err.message);
   }
 }
 
