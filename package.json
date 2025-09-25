@@ -39,7 +39,7 @@
     },
     "devDependencies": {
         "kist": "^0.1.43",
-        "sass": "^1.92.1",
+        "sass": "^1.93.0",
         "vite": "^6.3.5"
     },
     "files": [
