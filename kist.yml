@@ -1,25 +1,12 @@
+# =============================================================================
+# boot.gl - Production Build Configuration
+# =============================================================================
 
 ---
 
-
-# =============================================================================
-# Options
-# =============================================================================
-
 options:
-
-    mode: development
-    live:
-        enabled: false
-        port: 3000
-        root: public
-        watchPaths:
-            - src/**
-            - config/**
-        ignoredPaths:
-            - node_modules/**
-    logLevel: debug
-
+    mode: production
+    logLevel: info
 
 # =============================================================================
 # Stages
@@ -27,167 +14,88 @@ options:
 
 stages:
 
-    # Preprocessing
-    # =========================================================================
-    -
-        name: Preprocessing
-        description: "Before starting a new build."
+    - name: Build
+      description: "Production build for boot.gl (CSS reset library)"
 
-        steps:
+      steps:
 
-            # Dirs Clean
+            # Clean dist directory
             # -----------------------------------------------------------------
-            -
-                name: CleanBuildDirStep
-                action: DirectoryCleanAction
-                options:
-                    dirPath: "./dist"
+            - name: CleanDistDirectory
+              action: DirectoryCleanAction
+              options:
+                  dirPath: "./dist"
 
-            # Process SCSS to CSS
+            # Process SCSS to CSS (compressed)
             # -----------------------------------------------------------------
-            -   name: ProcessMainStyles
-                action: StyleProcessingAction
-                options:
-                    inputFile: "./src/scss/index.scss"
-                    outputFile: "./dist/css/boot.gl.min.css"
-                    styleOption: "compressed"
-            -
-                name: ProcessAdditionalStyles
-                action: StyleProcessingAction
-                options:
-                    inputFile: "./src/scss/index.scss"
-                    outputFile: "./dist/css/boot.gl.css"
-                    styleOption: "expanded"
+            - name: ProcessMainStylesMinified
+              action: StyleProcessingAction
+              options:
+                  inputFile: "./src/scss/index.scss"
+                  outputFile: "./dist/css/boot.gl.min.css"
+                  styleOption: "compressed"
 
-            # Copy Files
+            # Process SCSS to CSS (expanded)
             # -----------------------------------------------------------------
-            -
-                name: CopyLICENSE
-                action: FileCopyAction
-                options:
-                    srcFile: "./LICENSE"
-                    destDir: "./dist"
-            -
-                name: CopyREADME
-                action: FileCopyAction
-                options:
-                    srcFile: "./README.md"
-                    destDir: "./dist"
+            - name: ProcessMainStylesExpanded
+              action: StyleProcessingAction
+              options:
+                  inputFile: "./src/scss/index.scss"
+                  outputFile: "./dist/css/boot.gl.css"
+                  styleOption: "expanded"
 
-            # Copy Dirs
+            # Copy source SCSS files
             # -----------------------------------------------------------------
-            -
-                name: CopySrcSCSS
-                action: DirectoryCopyAction
-                options:
-                    srcDir: "./src/scss"
-                    destDir: "./dist/scss"
-            -
-                name: CopySrcTS
-                action: DirectoryCopyAction
-                options:
-                    srcDir: "./src/ts"
-                    destDir: "./dist/ts"
+            - name: CopySrcSCSS
+              action: DirectoryCopyAction
+              options:
+                  srcDir: "./src/scss"
+                  destDir: "./dist/scss"
 
-            # RenderTemplates
+            # Copy license and readme
             # -----------------------------------------------------------------
+            - name: CopyLICENSE
+              action: FileCopyAction
+              options:
+                  srcFile: "./LICENSE"
+                  destDir: "./dist"
 
-            -
-                name: RenderTemplates
-                action: TemplateRenderAction
-                options:
-                    templatesDir: "./src/jinja"
-                    outputDir: "./src/html"
-                    renderAllFromDir: true
-                context:
-                    name: "kist"
-                    version: "1.0.0"
-                    author: "Lars van Vianen"
+            - name: CopyREADME
+              action: FileCopyAction
+              options:
+                  srcFile: "./README.md"
+                  destDir: "./dist"
 
-
-            # Copy Dirs
+            # Generate package.json for distribution
             # -----------------------------------------------------------------
-            -
-                name: CopySrcHTML
-                action: DirectoryCopyAction
-                options:
-                    srcDir: "./src/scss"
-                    destDir: "./dist/scss"
-            -
-                name: CopySrcTS
-                action: DirectoryCopyAction
-                options:
-                    srcDir: "./src/html"
-                    destDir: "./dist/html"
+            - name: GeneratePackageJSON
+              action: PackageManagerAction
+              options:
+                  packageJsonPath: "./package.json"
+                  outputDir: "./dist"
+                  fields:
+                      - name
+                      - version
+                      - description
+                      - keywords
+                      - license
+                      - homepage
+                      - author
+                      - contributors
+                      - repository
+                      - funding
+                      - sass
+                      - style
+                      - exports
+                      - files
 
-            # Compile TS to JS
+            # Version synchronization
             # -----------------------------------------------------------------
-
-
-            -
-                name: Compile TS to JS
-                action: TypeScriptCompilerAction
-                options:
-                    tsConfigPath: "./tsconfig.pro.json"
-                    filePaths:
-                        - "src/ts/index.ts"
-                        # - "src/utils.ts"
-                    outputDir: "./dist/js"
-                    compilerOptions:
-                        target: "ES2020"
-                        module: "CommonJS"
-            -
-                name: Rename README File
-                action: FileRenameAction
-                options:
-                    srcPath: "./dist/js/index.js.map"
-                    targetPath: "./dist/js/boot.gl.js.map"
-
-            -
-                name: Rename README File
-                action: FileRenameAction
-                options:
-                    srcPath: "./dist/js/index.js"
-                    targetPath: "./dist/js/boot.gl.js"
-
-            # Package.json
-            # -----------------------------------------------------------------
-            -
-                name: Package.json
-                action: PackageManagerAction
-                options:
-                    packageJsonPath: "./package.json"
-                    outputDir: "./dist"
-                    fields:
-                        - name
-                        - version
-                        - bin
-                        - dependencies
-                        - description
-                        - keywords
-                        - license
-                        - homepage
-                        - author
-                        - contributors
-                        - repository
-                        - funding
-                        - exports
-                    # customConfig:
-                    #     private: true
-                    #     scripts:
-                    #     start: "node index.js"
-                    #     build: "npm run build"
-                    #     devDependencies:
-                    #     typescript: "^5.0.0"
-
-            # Replace Version
-            # -----------------------------------------------------------------
-            -
-                name: ReplaceVersion
-                action: VersionWriteAction
-                options:
-                    files:
-                    -   path: "./CITATION.cff"
+            - name: SyncVersion
+              action: VersionWriteAction
+              options:
+                  files:
+                      - path: "./CITATION.cff"
                         key: "version: "
-                    -   path: "./VERSION"
+                      - path: "./VERSION"
                         key: "v"

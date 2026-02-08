@@ -33,13 +33,15 @@
     "sass": "src/scss/index.scss",
     "style": "dist/css/boot.gl.css",
     "scripts": {
-        "build": "npx kist --config ./kist.pro.yml",
+        "build": "npx kist --config ./kist.yml",
         "watch": "npx kist --config ./kist.yml --live",
         "dev": "vite"
     },
     "devDependencies": {
-        "kist": "^0.1.58",
+        "@getkist/action-sass": "^1.0.4",
+        "kist": "^0.1.60",
         "sass": "^1.97.3",
+        "typescript": "^5.9.3",
         "vite": "^7.3.1"
     },
     "files": [

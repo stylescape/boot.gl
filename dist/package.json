@@ -1,0 +1,40 @@
+{
+  "name": "boot.gl",
+  "version": "0.0.1",
+  "description": "Style Reset.",
+  "keywords": [
+    "boot.gl",
+    "stylescape",
+    "sass",
+    "reset"
+  ],
+  "license": "MIT",
+  "homepage": "https://www.boot.gl/",
+  "main": "js/index.js",
+  "types": "js/index.d.ts",
+  "files": [
+    "src/**",
+    "dist/**"
+  ],
+  "author": "Lars van Vianen <lars@vianen.com> (https://www.vianen.com)",
+  "contributors": [
+    "Scape Agency <info@scape.agency>"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stylescape/boot.gl.git"
+  },
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/scape-foundation"
+    }
+  ],
+  "sass": "src/scss/index.scss",
+  "style": "dist/css/boot.gl.css",
+  "exports": {
+    ".": {
+      "sass": "./scss/index.scss"
+    }
+  }
+}

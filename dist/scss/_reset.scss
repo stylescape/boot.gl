@@ -1,0 +1,202 @@
+////
+///
+/// Reset Mixins Module
+/// ===========================================================================
+///
+/// @group Reset
+/// @author Scape Agency
+/// @link https://boot.gl
+/// @since 0.1.0 initial release
+/// @todo None
+/// @access public
+///
+////
+
+// ============================================================================
+// Use
+// ============================================================================
+
+// Reset margin and padding for all elements
+@mixin reset_bleed {
+    margin: 0;
+    margin-block-start: 0;
+    margin-block-end: 0;
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+    padding: 0;
+    border: 0; // Ensures no borders are applied unless explicitly defined
+    font-size: 100%; // Prevent scaling issues by setting default font size
+    font: inherit; // Ensures fonts are consistently inherited from parent elements
+    vertical-align: baseline; // Aligns elements to the baseline to avoid layout shifts
+}
+
+// Apply the reset mixin to all elements
+*,
+a,
+abbr,
+acronym,
+address,
+applet,
+area,
+article,
+aside,
+audio,
+b,
+base,
+basefont,
+bb,
+bdo,
+big,
+blockquote,
+body,
+br,
+button,
+canvas,
+caption,
+center,
+cite,
+code,
+col,
+colgroup,
+command,
+datalist,
+dd,
+del,
+details,
+dfn,
+dialog,
+dir,
+div,
+dl,
+dt,
+em,
+embed,
+eventsource,
+fieldset,
+figcaption,
+figure,
+font,
+footer,
+form,
+frame,
+frameset,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+head,
+header,
+hgroup,
+hr,
+html,
+i,
+iframe,
+img,
+input,
+ins,
+isindex,
+kbd,
+keygen,
+label,
+legend,
+li,
+link,
+map,
+mark,
+menu,
+meta,
+meter,
+nav,
+noframes,
+noscript,
+object,
+ol,
+optgroup,
+option,
+output,
+p,
+param,
+pre,
+progress,
+q,
+rp,
+rt,
+ruby,
+s,
+samp,
+script,
+section,
+select,
+small,
+source,
+span,
+strike,
+strong,
+style,
+sub,
+sup,
+table,
+tbody,
+td,
+textarea,
+tfoot,
+th,
+thead,
+time,
+title,
+tr,
+track,
+tt,
+u,
+ul,
+var,
+video,
+wbr {
+    @include reset_bleed;
+}
+
+// HTML5 display-role reset for older browsers
+// Ensures HTML5 elements are displayed correctly in older browsers
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section,
+main {
+    display: block;
+}
+
+// html, body, div, span, applet, object, iframe,
+// h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+// a, abbr, acronym, address, big, cite, code,
+// del, dfn, em, img, ins, kbd, q, s, samp,
+// small, strike, strong, sub, sup, tt, var,
+// b, u, i, center,
+// dl, dt, dd, ol, ul, li,
+// fieldset, form, label, legend,
+// table, caption, tbody, tfoot, thead, tr, th, td,
+// article, aside, canvas, details, embed,
+// figure, figcaption, footer, header, hgroup,
+// menu, nav, output, ruby, section, summary,
+// time, mark, audio, video {
+//   margin: 0;
+//   padding: 0;
+//   border: 0;
+//   font-size: 100%;
+//   font: inherit;
+//   vertical-align: baseline;
+// }
+
+// /* HTML5 display-role reset for older browsers */
+// article, aside, details, figcaption, figure,
+// footer, header, hgroup, menu, nav, section, main {
+//   display: block;
+// }
