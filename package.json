@@ -1,7 +1,7 @@
 {
     "name": "boot.gl",
     "description": "Style Reset.",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "config": {
         "version_short": "0.1"
     },
