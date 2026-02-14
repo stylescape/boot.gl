@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 title: boot.gl
-version: 0.0.1
+version: 0.0.2
 date-released: 2024-07-01
 url: "https://github.com/stylescape/boot.gl"
 repository-code: "https://github.com/stylescape/boot.gl"
@@ -26,6 +26,8 @@ keywords:
   - web development
   - design toolkit
   - fluid typography
+
+
 
 
 
