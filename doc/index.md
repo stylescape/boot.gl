@@ -16,4 +16,4 @@ Similarly, “points” are another unit for expressing the size of characters. 
 In Japan, since Motoki Shōzō began his work with movable type printing, another unit has been used to express the size of characters: the gō (号). This unit is not used today, but the size of a 5-gō character is equal to a standard 10.5-point character used in PC software such as Microsoft Word. This is because the standard character size used in documents was 5-gō.
 
 
-**boot.gl** is an open-source project by [Scape Agency](https://www.scape.agency "Scape Agency website").
+**boot.gl** is an open-source project by [Scape Press](https://www.scape.press "Scape Press website").
