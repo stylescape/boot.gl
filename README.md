@@ -31,4 +31,58 @@
 
 <br/>
 
-`boot.gl` is ...
+`boot.gl` is the style reset of the Stylescape suite. It ships three
+independent baselines, so you can pick the one that fits:
+
+| Stylesheet       | Source                     | What it does                                                                             |
+| ---------------- | -------------------------- | ---------------------------------------------------------------------------------------- |
+| `boot.gl.css`    | `scss/index.scss`          | Hard reset: strips margins, padding, borders, list markers and quotes from every element |
+| `normalize.css`  | `scss/normalize.scss`      | normalize.css v8: keeps browser defaults, fixes cross-browser inconsistencies            |
+| `reboot.css`     | `scss/reboot.scss`         | Opinionated baseline with readable typography; every value is a configurable setting     |
+
+Each file ships expanded and minified (`*.min.css`).
+
+## Installation
+
+```sh
+npm install boot.gl
+```
+
+## Usage
+
+### CSS
+
+```html
+<link rel="stylesheet" href="node_modules/boot.gl/css/boot.gl.min.css">
+```
+
+or, through a bundler:
+
+```js
+import "boot.gl/css/boot.gl.css";
+```
+
+### Sass
+
+```scss
+// Hard reset (also exposes the `reset_bleed` mixin)
+@use "pkg:boot.gl";
+
+// Or the configurable reboot
+@use "pkg:boot.gl/scss/reboot" with (
+    $body-bg: #fafafa,
+    $link-color: teal,
+);
+```
+
+`pkg:` URLs need Sass's Node package importer (`--pkg-importer=node`, or
+`importers: [new NodePackageImporter()]` in the JS API).
+
+## Development
+
+```sh
+npm install
+npm run build   # build dist/
+npm run dev     # dev server with a demo page on http://localhost:3000
+```
+

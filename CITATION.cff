@@ -21,11 +21,11 @@ authors:
     orcid: "https://orcid.org/0000-0002-8790-8630"
 
 keywords:
-  - responsive design
+  - CSS reset
+  - normalize
   - SCSS
   - web development
-  - design toolkit
-  - fluid typography
+  - stylescape
 
 
 

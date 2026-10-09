@@ -1,4 +1,13 @@
 {
-    "title": "boot.gl test",
-    "name": "world"
-  }
+    "title": "boot.gl",
+    "tagline": "Style Reset",
+    "stylesheet": "/css/boot.gl.css",
+    "stylescape_stylesheet": "/vendor/stylescape/stylescape.css",
+    "sections": [
+        { "id": "headings", "label": "Headings" },
+        { "id": "text", "label": "Text" },
+        { "id": "lists", "label": "Lists" },
+        { "id": "table", "label": "Table" },
+        { "id": "forms", "label": "Forms" }
+    ]
+}

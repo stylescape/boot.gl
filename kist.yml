@@ -26,7 +26,7 @@ stages:
               options:
                   dirPath: "./dist"
 
-            # Process SCSS to CSS (compressed)
+            # Process reset SCSS to CSS (compressed)
             # -----------------------------------------------------------------
             - name: ProcessMainStylesMinified
               action: StyleProcessingAction
@@ -35,13 +35,49 @@ stages:
                   outputFile: "./dist/css/boot.gl.min.css"
                   styleOption: "compressed"
 
-            # Process SCSS to CSS (expanded)
+            # Process reset SCSS to CSS (expanded)
             # -----------------------------------------------------------------
             - name: ProcessMainStylesExpanded
               action: StyleProcessingAction
               options:
                   inputFile: "./src/scss/index.scss"
                   outputFile: "./dist/css/boot.gl.css"
+                  styleOption: "expanded"
+
+            # Process normalize SCSS to CSS (compressed)
+            # -----------------------------------------------------------------
+            - name: ProcessNormalizeStylesMinified
+              action: StyleProcessingAction
+              options:
+                  inputFile: "./src/scss/normalize.scss"
+                  outputFile: "./dist/css/normalize.min.css"
+                  styleOption: "compressed"
+
+            # Process normalize SCSS to CSS (expanded)
+            # -----------------------------------------------------------------
+            - name: ProcessNormalizeStylesExpanded
+              action: StyleProcessingAction
+              options:
+                  inputFile: "./src/scss/normalize.scss"
+                  outputFile: "./dist/css/normalize.css"
+                  styleOption: "expanded"
+
+            # Process reboot SCSS to CSS (compressed)
+            # -----------------------------------------------------------------
+            - name: ProcessRebootStylesMinified
+              action: StyleProcessingAction
+              options:
+                  inputFile: "./src/scss/reboot.scss"
+                  outputFile: "./dist/css/reboot.min.css"
+                  styleOption: "compressed"
+
+            # Process reboot SCSS to CSS (expanded)
+            # -----------------------------------------------------------------
+            - name: ProcessRebootStylesExpanded
+              action: StyleProcessingAction
+              options:
+                  inputFile: "./src/scss/reboot.scss"
+                  outputFile: "./dist/css/reboot.css"
                   styleOption: "expanded"
 
             # Copy source SCSS files
@@ -51,6 +87,18 @@ stages:
               options:
                   srcDir: "./src/scss"
                   destDir: "./dist/scss"
+
+            # Render the demo page served by `npm run dev` (not published)
+            # -----------------------------------------------------------------
+            - name: RenderDemoPage
+              action: TemplateRenderAction
+              options:
+                  templatePath: "./exe/pages/index.html.jinja"
+                  outputPath: "./dist/html/index.html"
+                  searchPaths:
+                      - "./exe"
+                  contextFiles:
+                      - "./exe/data/index.json"
 
             # Copy license and readme
             # -----------------------------------------------------------------
@@ -83,11 +131,25 @@ stages:
                       - author
                       - contributors
                       - repository
+                      - bugs
                       - funding
-                      - sass
-                      - style
-                      - exports
-                      - files
+                  # Paths are relative to dist/, which is the published root
+                  customConfig:
+                      main: "css/boot.gl.css"
+                      types: null
+                      style: "css/boot.gl.css"
+                      sass: "scss/index.scss"
+                      files:
+                          - "css/**/*.css"
+                          - "scss/**/*.scss"
+                      exports:
+                          ".":
+                              sass: "./scss/index.scss"
+                              style: "./css/boot.gl.css"
+                              default: "./css/boot.gl.css"
+                          "./scss/*": "./scss/*"
+                          "./css/*": "./css/*"
+                          "./package.json": "./package.json"
 
             # Version synchronization
             # -----------------------------------------------------------------

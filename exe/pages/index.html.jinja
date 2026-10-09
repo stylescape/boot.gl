@@ -4,66 +4,140 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title }}</title>
-    <link rel="stylesheet" href="../css/boot.gl.css">
+    <style>
+        /*
+         * The demo chrome is styled with stylescape; the specimens are styled
+         * by boot.gl alone. Both live in stylescape's `ss` layer so they can
+         * be slotted between its sublayers:
+         *
+         * - ss.specimen reverts every stylescape reset, typography and
+         *   appearance rule inside .bootgl-specimen back to browser defaults;
+         * - ss.bootgl (boot.gl itself) then applies on top of those defaults;
+         * - stylescape's component and utility layers stay above both, so the
+         *   ss-c-* / ss-u-* chrome classes keep their styling.
+         */
+        @layer ss.reset, ss.lexicon, ss.rhythm, ss.typography, ss.flow,
+            ss.layout, ss.appearance, ss.specimen, ss.bootgl, ss.components,
+            ss.utilities, ss.overrides;
 
+        @layer ss.specimen {
+            .bootgl-specimen * {
+                all: revert;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="{{ stylescape_stylesheet }}">
+    <style>
+        @import url("{{ stylesheet }}") layer(ss.bootgl);
+    </style>
 </head>
-
 
 <body>
     {%- include "partials/header.html.jinja" %}
-    <h1>Hello {{ name }}!</h1>
-    <div class="guide--graph"></div>
-    <div class="guide--baseline"></div>
-    <h1>Hello, World!</h1>
 
-    <p>This is a test HTML page.</p>
+    <main class="ss-u-py-8">
+        <div class="ss-c-container ss-u-grid ss-u-gap-6">
+            <section id="headings" class="ss-c-card" aria-labelledby="headings-title">
+                <header class="ss-c-card__header">
+                    <h2 id="headings-title" class="ss-c-card__title">Headings</h2>
+                </header>
+                <div class="ss-c-card__body ss-u-pt-4 bootgl-specimen">
+                    <h3>Heading 3</h3>
+                    <h4>Heading 4</h4>
+                    <h5>Heading 5</h5>
+                    <h6>Heading 6</h6>
+                </div>
+            </section>
 
-    <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec gravida augue lorem, eget feugiat magna posuere
-        et. Praesent eget augue consequat, pulvinar massa vitae, luctus neque. Vivamus sed metus libero. Cras egestas
-        ornare mauris ac lacinia. Ut venenatis ante ut augue consectetur lacinia. Vestibulum eget finibus quam, id
-        imperdiet libero. Etiam laoreet luctus justo, nec congue purus consequat sit amet. Nulla maximus orci a commodo
-        viverra. Vivamus ultrices erat et est rhoncus aliquet ut non massa. Quisque id sagittis purus. Proin non
-        volutpat nisl, vitae egestas nisi. Pellentesque placerat pellentesque dolor, vel eleifend magna maximus quis.
-        Etiam euismod, augue vel pharetra volutpat, arcu justo gravida orci, non maximus dolor lectus non sapien.
-        Phasellus vitae gravida elit, at rhoncus orci.
-    </p>
-    <p>
-        Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Donec non malesuada
-        nibh, ut fermentum eros. Ut libero arcu, aliquam ut justo eu, condimentum posuere erat. Duis ac mauris
-        vulputate, tempor neque non, posuere orci. Nulla magna lectus, tincidunt sed purus eget, varius venenatis ante.
-        Duis pellentesque ultricies commodo. Praesent vulputate quis turpis viverra hendrerit. Phasellus convallis nisl
-        eget diam sodales eleifend. In molestie volutpat gravida. Donec volutpat nisl sed consequat gravida. Donec sit
-        amet pretium quam. Donec pellentesque dapibus mauris sit amet condimentum. Praesent ac placerat est. Duis
-        finibus ex aliquet lacus suscipit, sit amet dignissim nunc congue. Curabitur pretium ex sit amet arcu vehicula
-        porta. Pellentesque ut fermentum nunc.
-    </p>
-    <p>
-        Vestibulum tincidunt dui nec bibendum eleifend. Quisque rutrum, turpis ac fringilla tincidunt, felis sapien
-        faucibus diam, eleifend tristique nisl augue sed odio. Fusce sollicitudin libero lacinia sapien porta elementum.
-        Donec id mauris auctor, rutrum metus laoreet, tincidunt nisl. Duis pulvinar rhoncus euismod. Suspendisse
-        condimentum augue vel pretium pharetra. Aliquam id vehicula dolor. Vestibulum eu malesuada orci, accumsan
-        faucibus lectus. In a ultricies nisi, non suscipit metus. Aliquam aliquam ante finibus libero lobortis, eget
-        ornare ex pharetra. Mauris feugiat maximus mauris, varius aliquet lectus ornare sit amet.
-    </p>
-    <p>
-        Praesent tempor lorem quis viverra hendrerit. Nullam maximus semper scelerisque. Suspendisse et mauris vitae
-        enim pellentesque tristique. Nunc odio mi, porta eget quam non, iaculis maximus nunc. Quisque consequat orci non
-        enim blandit, sit amet tempus mauris elementum. Proin sit amet placerat justo, a facilisis arcu. Proin commodo
-        nunc et enim volutpat euismod. In hac habitasse platea dictumst. Vivamus vulputate mollis leo, ut ultrices lacus
-        auctor at.
-    </p>
-    <p>
-        Duis tristique urna lorem, ut porta dolor ultricies a. Sed eu consectetur mi, a maximus turpis. Aenean interdum,
-        velit semper facilisis tincidunt, risus nisl pulvinar augue, eget luctus velit sem in ligula. Etiam vestibulum
-        eu risus vel eleifend. Aenean nec risus ligula. Aliquam eu condimentum quam. Pellentesque eu vehicula tortor,
-        pharetra posuere erat. In sed volutpat felis, vel placerat tellus. Suspendisse nulla ligula, mattis sit amet
-        neque in, tincidunt blandit orci. Aenean quis orci ligula. Vestibulum congue interdum mi ut interdum.
-    </p>
+            <section id="text" class="ss-c-card" aria-labelledby="text-title">
+                <header class="ss-c-card__header">
+                    <h2 id="text-title" class="ss-c-card__title">Text</h2>
+                </header>
+                <div class="ss-c-card__body ss-u-pt-4 bootgl-specimen">
+                    <p>
+                        A paragraph with <a href="#">a link</a>, <strong>strong</strong>, <em>emphasis</em>,
+                        <small>small</small>, <mark>mark</mark>, <abbr title="Abbreviation">abbr</abbr>,
+                        <code>code</code>, <kbd>Ctrl</kbd> + <kbd>C</kbd>, H<sub>2</sub>O and E = mc<sup>2</sup>.
+                    </p>
+                    <blockquote>
+                        <p>A blockquote with an inline <q>quotation</q>.</p>
+                    </blockquote>
+                    <pre><code>pre > code {
+    white-space: pre;
+}</code></pre>
+                    <hr>
+                </div>
+            </section>
+
+            <section id="lists" class="ss-c-card" aria-labelledby="lists-title">
+                <header class="ss-c-card__header">
+                    <h2 id="lists-title" class="ss-c-card__title">Lists</h2>
+                </header>
+                <div class="ss-c-card__body ss-u-pt-4 bootgl-specimen">
+                    <ul>
+                        <li>Unordered item</li>
+                        <li>Unordered item
+                            <ol>
+                                <li>Nested ordered item</li>
+                            </ol>
+                        </li>
+                    </ul>
+                    <dl>
+                        <dt>Term</dt>
+                        <dd>Description</dd>
+                    </dl>
+                </div>
+            </section>
+
+            <section id="table" class="ss-c-card" aria-labelledby="table-title">
+                <header class="ss-c-card__header">
+                    <h2 id="table-title" class="ss-c-card__title">Table</h2>
+                </header>
+                <div class="ss-c-card__body ss-u-pt-4 bootgl-specimen">
+                    <table>
+                        <caption>Caption</caption>
+                        <thead>
+                            <tr><th>Header</th><th>Header</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Cell</td><td>Cell</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="forms" class="ss-c-card" aria-labelledby="forms-title">
+                <header class="ss-c-card__header">
+                    <h2 id="forms-title" class="ss-c-card__title">Forms</h2>
+                </header>
+                <div class="ss-c-card__body ss-u-pt-4 bootgl-specimen">
+                    <form>
+                        <fieldset>
+                            <legend>Legend</legend>
+                            <label for="demo-text">Text</label>
+                            <input id="demo-text" type="text" placeholder="Placeholder">
+                            <label for="demo-select">Select</label>
+                            <select id="demo-select"><option>Option</option></select>
+                            <label for="demo-textarea">Textarea</label>
+                            <textarea id="demo-textarea"></textarea>
+                            <button type="button">Button</button>
+                        </fieldset>
+                    </form>
+                </div>
+            </section>
+
+            <div class="ss-c-card bootgl-specimen">
+                <details>
+                    <summary>Details</summary>
+                    <p>Disclosed content.</p>
+                </details>
+            </div>
+
+            <p hidden>This paragraph is hidden and should not appear.</p>
+        </div>
+    </main>
 </body>
-
 
 </html>

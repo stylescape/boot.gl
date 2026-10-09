@@ -1,3 +1,11 @@
-<header>
-  <p>{{ title }}</p>
+<header class="ss-c-navbar ss-c-navbar--sticky ss-u-flex-wrap">
+    <div class="ss-c-navbar__start">
+        <h1 class="ss-c-page-header__headline">{{ title }}</h1>
+        <p class="ss-c-badge ss-c-badge--muted">{{ tagline }}</p>
+    </div>
+    <nav class="ss-c-navbar__end ss-u-flex-wrap" aria-label="Sections">
+        {%- for section in sections %}
+        <a class="ss-c-navbar__link" href="#{{ section.id }}">{{ section.label }}</a>
+        {%- endfor %}
+    </nav>
 </header>
