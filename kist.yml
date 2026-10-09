@@ -160,4 +160,4 @@ stages:
                       - path: "./CITATION.cff"
                         key: "version: "
                       - path: "./VERSION"
-                        key: "v"
+                        key: ""  # VERSION holds a bare version

@@ -44,7 +44,7 @@
     "devDependencies": {
         "@getkist/action-nunjucks": "^2.0.28",
         "@getkist/action-sass": "^1.0.4",
-        "kist": "^0.1.60",
+        "kist": "^0.1.81",
         "micromatch": "^4.0.8",
         "nunjucks": "^3.2.4",
         "sass": "^1.97.3",

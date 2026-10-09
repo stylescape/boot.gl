@@ -21,6 +21,13 @@ describe('reset (index.scss)', () => {
         assert.match(css, /^\* \{\n {2}margin: 0;\n {2}padding: 0;\n {2}border: 0;/m);
     });
 
+    it('removes list markers, quotation marks and table spacing', () => {
+        assert.match(css, /ol,\nul,\nmenu \{\n {2}list-style: none;/);
+        assert.match(css, /blockquote,\nq \{\n {2}quotes: none;/);
+        assert.match(css, /table \{\n {2}border-collapse: collapse;\n {2}border-spacing: 0;/);
+        assert.match(css, /body \{\n {2}line-height: 1;/);
+    });
+
     it('keeps the hidden attribute working', () => {
         assert.match(css, /\[hidden\] \{\n {2}display: none;/);
     });
