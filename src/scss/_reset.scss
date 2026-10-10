@@ -1,90 +1,126 @@
 ////
 ///
-/// Reset Mixins Module
+/// Reset Module
 /// ===========================================================================
+///
+/// Every setting is `!default`, so it can be overridden on import:
+///
+///     @use "pkg:boot.gl" with ($layer: boot, $media-block: false);
 ///
 /// @group Reset
 /// @author Scape Press
 /// @link https://boot.gl
 /// @since 0.1.0 initial release
-/// @todo None
 /// @access public
 ///
 ////
 
+@use "mixins";
+
 // ============================================================================
-// Mixins
+// Settings
 // ============================================================================
 
-/// Strip the box model and typography of an element back to zero.
-/// `margin` and `padding` also clear their logical (`-block-*`/`-inline-*`)
-/// longhands, and the `font` shorthand resets `font-size` with the rest.
-@mixin reset_bleed {
-    margin: 0;
-    padding: 0;
-    border: 0; // Ensures no borders are applied unless explicitly defined
-    font: inherit; // Ensures fonts are consistently inherited from parent elements
-    vertical-align: baseline; // Aligns elements to the baseline to avoid layout shifts
-}
+/// Cascade layer to wrap the reset in; `null` emits it unlayered.
+$layer: null !default;
+
+/// `box-sizing` for every element and pseudo-element; `false` keeps
+/// `content-box`.
+$box-sizing: border-box !default;
+
+/// Render images, video and other replaced elements as blocks that never
+/// overflow their container.
+$media-block: true !default;
+
+/// Balance heading lines and avoid orphans in paragraphs.
+$text-wrap: true !default;
+
+/// Let `height: auto` and other keywords animate.
+$interpolate-size: true !default;
+
+/// Stop animations and transitions under `prefers-reduced-motion: reduce`.
+$reduced-motion: true !default;
 
 // ============================================================================
 // Reset
 // ============================================================================
 
-// Apply the reset to every element. The universal selector has zero
-// specificity, so any later rule overrides it without a fight.
-* {
-    @include reset_bleed;
-}
-
-// Restore a neutral line height for the document
-body {
-    line-height: 1;
-}
-
-// HTML5 display-role reset for older browsers
-article,
-aside,
-details,
-figcaption,
-figure,
-footer,
-header,
-hgroup,
-main,
-menu,
-nav,
-search,
-section {
-    display: block;
-}
-
-// Remove list markers
-ol,
-ul,
-menu {
-    list-style: none;
-}
-
-// Remove generated quotation marks
-blockquote,
-q {
-    quotes: none;
-
-    &::before,
-    &::after {
-        content: "";
-        content: none;
+@include mixins.layer($layer) {
+    // Apply the reset to every element. The universal selector has zero
+    // specificity, so any later rule overrides it without a fight.
+    * {
+        @include mixins.reset-bleed;
     }
-}
 
-// Collapse table borders and spacing
-table {
-    border-collapse: collapse;
-    border-spacing: 0;
-}
+    @if $box-sizing {
+        *,
+        ::before,
+        ::after {
+            box-sizing: $box-sizing;
+        }
+    }
 
-// Keep the `hidden` attribute working after the display resets above
-[hidden] {
-    display: none;
+    @if $interpolate-size {
+        :root {
+            interpolate-size: allow-keywords;
+        }
+    }
+
+    // Restore a neutral line height for the document
+    body {
+        line-height: 1;
+    }
+
+    // Remove list markers
+    ol,
+    ul,
+    menu {
+        list-style: none;
+    }
+
+    // Remove generated quotation marks
+    blockquote,
+    q {
+        quotes: none;
+
+        &::before,
+        &::after {
+            content: none;
+        }
+    }
+
+    // Collapse table borders and spacing
+    table {
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+
+    @if $media-block {
+        // `:where()` keeps the specificity at zero, like the `*` rule
+        :where(img, picture, video, canvas, svg) {
+            display: block;
+            max-inline-size: 100%;
+        }
+    }
+
+    @if $text-wrap {
+        :where(h1, h2, h3, h4, h5, h6) {
+            text-wrap: balance;
+        }
+
+        :where(p, li, figcaption) {
+            text-wrap: pretty;
+        }
+    }
+
+    @if $reduced-motion {
+        @include mixins.reduced-motion;
+    }
+
+    // Keep the `hidden` attribute working after the display resets above.
+    // `hidden="until-found"` is left to the browser, which hides it with
+    // `content-visibility` so find-in-page can still reveal it.
+    [hidden]:not([hidden="until-found"]) {
+        display: none;
+    }
 }

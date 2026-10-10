@@ -32,15 +32,19 @@
 <br/>
 
 `boot.gl` is the style reset of the Stylescape suite. It ships three
-independent baselines, so you can pick the one that fits:
+independent baselines, so you can pick the one that fits. If you are unsure,
+use the reboot.
 
 | Stylesheet       | Source                     | What it does                                                                             |
 | ---------------- | -------------------------- | ---------------------------------------------------------------------------------------- |
+| `reboot.css`     | `scss/reboot.scss`         | **Recommended.** Readable typography, dark mode, logical properties; every value is a setting |
 | `boot.gl.css`    | `scss/index.scss`          | Hard reset: strips margins, padding, borders, list markers and quotes from every element |
-| `normalize.css`  | `scss/normalize.scss`      | normalize.css v8: keeps browser defaults, fixes cross-browser inconsistencies            |
-| `reboot.css`     | `scss/reboot.scss`         | Opinionated baseline with readable typography; every value is a configurable setting     |
+| `normalize.css`  | `scss/normalize.scss`      | modern-normalize: keeps browser defaults, fixes inconsistencies                          |
+| `print.css`      | `scss/print.scss`          | Opt-in print styles; works next to any of the above                                      |
 
-Each file ships expanded and minified (`*.min.css`).
+Each file ships expanded and minified (`*.min.css`). See the
+[comparison](https://www.boot.gl/specifications/comparison/) with Meyer's
+reset, normalize.css, sanitize.css, Bootstrap Reboot and Tailwind Preflight.
 
 ## Installation
 
@@ -56,6 +60,12 @@ npm install boot.gl
 <link rel="stylesheet" href="node_modules/boot.gl/css/boot.gl.min.css">
 ```
 
+from a CDN:
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boot.gl@0.1/css/boot.gl.min.css">
+```
+
 or, through a bundler:
 
 ```js
@@ -65,14 +75,17 @@ import "boot.gl/css/boot.gl.css";
 ### Sass
 
 ```scss
-// Hard reset (also exposes the `reset_bleed` mixin)
-@use "pkg:boot.gl";
+// Hard reset, in a cascade layer so every unlayered style wins
+@use "pkg:boot.gl" with ($layer: base);
 
 // Or the configurable reboot
 @use "pkg:boot.gl/scss/reboot" with (
     $body-bg: #fafafa,
     $link-color: teal,
 );
+
+// Mixins only (`reset-bleed`, `layer`), no CSS emitted
+@use "pkg:boot.gl/scss/mixins" as boot;
 ```
 
 `pkg:` URLs need Sass's Node package importer (`--pkg-importer=node`, or
@@ -82,7 +95,11 @@ import "boot.gl/css/boot.gl.css";
 
 ```sh
 npm install
-npm run build   # build dist/
-npm run dev     # dev server with a demo page on http://localhost:3000
+npm run lint           # stylelint
+npm test               # compile and check every stylesheet
+npm run test:browser   # computed styles in Chromium, Firefox and WebKit
+npm run build          # build dist/
+npm run test:package   # pack dist/ and load it as a dependency (after build)
+npm run dev            # dev server with a demo page on http://localhost:3000
 ```
 

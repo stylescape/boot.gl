@@ -1,10 +1,8 @@
 {
     "name": "boot.gl",
+    "private": true,
     "description": "Style Reset.",
-    "version": "0.0.2",
-    "config": {
-        "version_short": "0.1"
-    },
+    "version": "0.1.0",
     "keywords": [
         "boot.gl",
         "stylescape",
@@ -36,7 +34,10 @@
         "build": "npx kist --config ./kist.yml",
         "watch": "npx kist --config ./kist.yml --live",
         "dev": "vite",
-        "test": "node --test \"tst/**/*.test.mjs\""
+        "lint": "stylelint \"src/scss/**/*.scss\"",
+        "test": "node --test \"tst/**/*.test.mjs\"",
+        "test:browser": "playwright test",
+        "test:package": "node --test tst/package.e2e.mjs"
     },
     "engines": {
         "node": ">=20.19.0"
@@ -44,13 +45,17 @@
     "devDependencies": {
         "@getkist/action-nunjucks": "^2.0.28",
         "@getkist/action-sass": "^1.0.4",
+        "@playwright/test": "^1.64.0",
         "kist": "^0.1.81",
         "micromatch": "^4.0.8",
+        "modern-normalize": "^3.0.1",
         "nunjucks": "^3.2.4",
+        "postcss": "^8.5.29",
         "sass": "^1.97.3",
         "serve-static": "^2.2.1",
+        "stylelint": "^17.16.0",
+        "stylelint-config-standard-scss": "^17.0.0",
         "stylescape": "^0.4.1",
-        "typescript": "^7.0.2",
         "vite": "^8.2.1"
     },
     "files": [

@@ -1,0 +1,12 @@
+{
+    "extends": "stylelint-config-standard-scss",
+    "ignoreFiles": ["dist/**", "node_modules/**"],
+    "rules": {
+        "property-no-vendor-prefix": null,
+        "scss/comment-no-empty": null,
+        "value-keyword-case": [
+            "lower",
+            { "ignoreProperties": ["font-family", "/^\\$font-family/"] }
+        ]
+    }
+}

@@ -80,6 +80,24 @@ stages:
                   outputFile: "./dist/css/reboot.css"
                   styleOption: "expanded"
 
+            # Process print SCSS to CSS (compressed)
+            # -----------------------------------------------------------------
+            - name: ProcessPrintStylesMinified
+              action: StyleProcessingAction
+              options:
+                  inputFile: "./src/scss/print.scss"
+                  outputFile: "./dist/css/print.min.css"
+                  styleOption: "compressed"
+
+            # Process print SCSS to CSS (expanded)
+            # -----------------------------------------------------------------
+            - name: ProcessPrintStylesExpanded
+              action: StyleProcessingAction
+              options:
+                  inputFile: "./src/scss/print.scss"
+                  outputFile: "./dist/css/print.css"
+                  styleOption: "expanded"
+
             # Copy source SCSS files
             # -----------------------------------------------------------------
             - name: CopySrcSCSS
@@ -139,6 +157,8 @@ stages:
                       types: null
                       style: "css/boot.gl.css"
                       sass: "scss/index.scss"
+                      unpkg: "css/boot.gl.min.css"
+                      jsdelivr: "css/boot.gl.min.css"
                       files:
                           - "css/**/*.css"
                           - "scss/**/*.scss"

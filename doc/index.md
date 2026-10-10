@@ -13,9 +13,14 @@ browsers apply to HTML elements.
 
 It ships three baselines; use the one that fits:
 
+- **Reboot** (`reboot.css`, recommended): readable, configurable defaults
+  with dark mode.
 - **Reset** (`boot.gl.css`): removes all default styling.
-- **Normalize** (`normalize.css`): keeps browser defaults and fixes inconsistencies.
-- **Reboot** (`reboot.css`): readable, configurable defaults.
+- **Normalize** (`normalize.css`): modern-normalize; keeps browser defaults
+  and fixes inconsistencies.
+
+An opt-in `print.css` works with any of them. See how they compare to other
+libraries on the [Comparison](specifications/comparison.md) page.
 
 Get started with the [Quick Start](quick_start.md).
 

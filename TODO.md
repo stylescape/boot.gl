@@ -2,50 +2,44 @@
 
 `[ ]` = not done, or not verified; the note on the line says which.
 
-## Open items from the 2026-10-07/08 fix pass
+Completed items are moved to `CHANGELOG.md`; the fix pass of 2026-10-07/08
+(`781c6e0`) and the improvement and comparison passes of 2026-10-09 are
+described there under Unreleased.
 
-Completed items are moved to `CHANGELOG.md`; the pass itself (`781c6e0`,
-pushed to `dev`) is described there under Unreleased.
+## Needs doing
 
-Needs a decision:
-
-- [ ] Choose the next version: 0.0.3 or 0.1.0. The reset now removes list
-      markers and quotation marks and sets `body { line-height: 1 }`, which
-      changes how pages look; that argues for 0.1.0. Bump `package.json`; the
-      build syncs `VERSION` and `CITATION.cff`.
-- [x] `dist/package.json` contained `"types": null`. Fixed in kist 0.1.81
-      (now the devDependency): a `null` in `customConfig` drops the key, so
-      `types: null` in `kist.yml` stays and the next build omits `types`.
-
-Needs doing:
-
-- [ ] Publish the release (push a `v*` tag on the branch the workflow runs
-      from). The published 0.0.2 contains only LICENSE, README and
-      package.json, no CSS or SCSS. The workflow now uses Node 22 (was 18,
-      too old for Vite 8 and Sass); it has not run since that change.
+- [ ] Publish 0.1.0: push the tag `v0.1.0` on the branch the workflow runs
+      from. `package.json`, `VERSION` and `CITATION.cff` are at 0.1.0; the
+      workflow fails if the tag and `package.json` disagree. The published
+      0.0.2 contains only LICENSE, README and package.json, no CSS or SCSS.
+      The rewritten publish workflow has not run yet.
+- [ ] Optional: register `.github/workflows/publish_package.yml` as a trusted
+      publisher for `boot.gl` on npmjs.com, then drop `PUBLISH_NPM_TOKEN`.
+      Until then npm publishes with the token (with provenance).
+  - **Decided 2026-10-10:** yes: register the workflow as an npm trusted publisher (OIDC, with provenance) and drop `PUBLISH_NPM_TOKEN`. Same for move.gl, font.gl, icon.gl, hue.gl, unit.gl (fleet decision).
+  - **Partly done 2026-10-10:** repo side is ready. `publish_package.yml`
+    has `id-token: write`, npm >= 11.5.1 and `--provenance`, so it uses OIDC
+    as soon as a trusted publisher exists. Left to do on npmjs.com: package
+    `boot.gl` > Settings > Trusted Publisher > GitHub Actions, organization
+    `stylescape`, repository `boot.gl`, workflow `publish_package.yml`. Only
+    after the first OIDC publish succeeds, remove `NODE_AUTH_TOKEN` and the
+    `PUBLISH_NPM_TOKEN` secret (removing it earlier breaks the fallback).
 - [ ] Deploy the docs: `deploy_docs.yml` only runs on `main`/`master`, so the
       rewritten docs go live once `dev` is merged there.
-- [ ] `sturnia-spatial` depends on `boot.gl` `^0.0.2` without importing it;
-      tracked in `starling-sturnia/sturnia-spatial/TODO.md`.
+  - **Partly done 2026-10-10:** the trigger stays on `main`/`master` on
+    purpose (`dev` is the default branch, but `mkdocs gh-deploy --force`
+    would publish unreleased docs). Added `workflow_dispatch` for a manual
+    run, and quoted `mkdocstrings[python]>=0.18` (unquoted, the shell treats
+    `>=0.18` as a redirect and the version bound is lost). `mkdocs build
+    --strict` passes locally. Left: merge `dev` into `main`, or run the
+    workflow by hand.
 
-Opportunistic:
+## Opportunistic
 
-- [ ] Unused files (checked 2026-10-09; none is referenced by a build step,
-      `mkdocs.yml` nav or the docs): `src/ts/index.ts` (empty placeholder),
-      `tsconfig.json` and the `typescript` devDependency (no TypeScript is
-      compiled; also drop `src/ts/**/*` from the watch list in
-      `vite.config.mjs`); `doc/sass/` (a SassDoc page for another project,
-      v0.0.36, with borders/device/guides mixins, published as a stray page
-      of the docs site); the empty `doc/block.txt`, `doc/earth.txt` and
-      `.gitmodules`; `src/.gitkeep` (`src/` has files); `config.version_short`
-      in `package.json` (not read anywhere). Remove them, or keep the
-      TypeScript setup for planned code.
-- [ ] Demo page (checked 2026-10-09 in headless Chromium with all three
-      stylesheets; no console errors, no 404s, no axe violations, no
-      horizontal scroll at 375 px): the active stylesheet also styles the
-      stylescape chrome, because the `ss.bootgl` layer sits above stylescape's
-      typography. With the reset, the header, nav and card titles fall back
-      to the browser serif font; with reboot, to the system font. Cosmetic;
-      fixing it needs a way to keep boot.gl's `*` rules out of the chrome.
-- [ ] `normalize.scss` is vendored normalize.css v8.0.1 unchanged, including
-      IE/Edge-only rules. Fine as is; trim only if a smaller file matters.
+- [ ] The reboot is a fork of Bootstrap 5's Reboot, so Bootstrap fixes do
+      not reach it. Compare it with `scss/_reboot.scss` of each Bootstrap
+      release and port what applies; last compared: never.
+  - **Partly done 2026-10-10:** the procedure and a tracking table are in
+    `.github/CONTRIBUTING.md` (Upstream tracking). The first comparison
+    itself is still to do, against the Bootstrap 5.3.x release of
+    2025-05-23, when the fork was made (exact release not recorded).

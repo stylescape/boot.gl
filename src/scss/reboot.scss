@@ -9,16 +9,33 @@
 //
 // Every setting below is `!default`, so it can be overridden on import:
 //
-//     @use "boot.gl/scss/reboot" with ($body-bg: #fafafa, $link-color: teal);
+//     @use "pkg:boot.gl/scss/reboot" with ($body-bg: #fafafa, $link-color: teal);
 //
-// Settings set to `null` generate no declaration.
+// Settings whose default is `null` generate no declaration until set. Sass
+// replaces a `null` passed to `with` by the default, so to drop a color set
+// it to `false` instead. Colors are emitted as
+// custom properties on `:root` (`--boot-body-bg`, ...), so they can also be
+// changed at runtime.
+
+@use "sass:list";
+@use "sass:map";
+@use "mixins";
 
 // Settings
 // ============================================================================
 
 // Options
+$layer: null !default;
+$prefix: "boot-" !default;
 $enable-smooth-scroll: true !default;
 $enable-button-pointers: true !default;
+$enable-dark-mode: true !default;
+$enable-reduced-motion: true !default;
+$enable-aria-cursors: true !default;
+
+// Spacing
+$spacer: 1rem !default;
+$block-margin-bottom: $spacer !default;
 
 // Typography
 $font-size-root: null !default;
@@ -33,11 +50,13 @@ $line-height-base: 1.5 !default;
 
 // Body
 $body-color: #212529 !default;
+$body-color-dark: #dee2e6 !default;
 $body-bg: #fff !default;
+$body-bg-dark: #212529 !default;
 $body-text-align: null !default;
 
 // Headings
-$headings-margin-bottom: 0.5rem !default;
+$headings-margin-bottom: $spacer * 0.5 !default;
 $headings-font-family: null !default;
 $headings-font-style: null !default;
 $headings-font-weight: 500 !default;
@@ -51,21 +70,27 @@ $h5-font-size: $font-size-base * 1.25 !default;
 $h6-font-size: $font-size-base !default;
 
 // Text
-$paragraph-margin-bottom: 1rem !default;
+$paragraph-margin-bottom: $spacer !default;
+$list-padding-inline-start: $spacer * 2 !default;
 $dt-font-weight: 700 !default;
+$dd-margin-bottom: $spacer * 0.5 !default;
 $small-font-size: 0.875em !default;
 $sub-sup-font-size: 0.75em !default;
 $mark-padding: 0.1875em !default;
+$mark-color: inherit !default;
 $mark-bg: #fff3cd !default;
+$mark-bg-dark: #664d03 !default;
 
 // Links
 $link-color: #0d6efd !default;
+$link-color-dark: #6ea8fe !default;
 $link-decoration: underline !default;
 $link-hover-color: #0a58ca !default;
+$link-hover-color-dark: #8bb9fe !default;
 $link-hover-decoration: null !default;
 
 // Horizontal rules
-$hr-margin-y: 1rem !default;
+$hr-margin-y: $spacer !default;
 $hr-color: inherit !default;
 $hr-opacity: 0.25 !default;
 $hr-height: 1px !default;
@@ -73,614 +98,685 @@ $hr-height: 1px !default;
 // Code
 $code-font-size: 0.875em !default;
 $code-color: #d63384 !default;
+$code-color-dark: #e685b5 !default;
 $pre-color: null !default;
 $kbd-padding-y: 0.1875rem !default;
 $kbd-padding-x: 0.375rem !default;
 $kbd-font-size: $code-font-size !default;
 $kbd-color: #fff !default;
+$kbd-color-dark: #212529 !default;
 $kbd-bg: #212529 !default;
+$kbd-bg-dark: #dee2e6 !default;
 $kbd-border-radius: 0.25rem !default;
 $nested-kbd-font-weight: null !default;
 
 // Tables
-$table-cell-padding-y: 0.5rem !default;
+$table-cell-padding-y: $spacer * 0.5 !default;
 $table-caption-color: #6c757d !default;
+$table-caption-color-dark: #adb5bd !default;
 $table-th-font-weight: null !default;
 
 // Forms
-$legend-margin-bottom: 0.5rem !default;
+$legend-margin-bottom: $spacer * 0.5 !default;
 $legend-font-size: 1.5rem !default;
 $legend-font-weight: null !default;
 
-// Document
-//
-// Change from `box-sizing: content-box` so that `width` is not affected by `padding` or `border`.
+// Color tokens
+// ============================================================================
 
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
+// Name, light value, dark value
+$-colors: (
+    "body-color": ($body-color, $body-color-dark),
+    "body-bg": ($body-bg, $body-bg-dark),
+    "link-color": ($link-color, $link-color-dark),
+    "link-hover-color": ($link-hover-color, $link-hover-color-dark),
+    "code-color": ($code-color, $code-color-dark),
+    "mark-bg": ($mark-bg, $mark-bg-dark),
+    "kbd-color": ($kbd-color, $kbd-color-dark),
+    "kbd-bg": ($kbd-bg, $kbd-bg-dark),
+    "table-caption-color": ($table-caption-color, $table-caption-color-dark),
+);
+
+// `var()` reference to a color token, or `null` (no declaration) when the
+// token's light value is `false` or `null`.
+@function -color($name) {
+    @if not list.nth(map.get($-colors, $name), 1) {
+        @return null;
+    }
+
+    @return var(--#{$prefix}#{$name});
 }
 
-// Root
-//
-// Ability to the value of the root font sizes, affecting the value of `rem`.
-// null by default, thus nothing is generated.
+@include mixins.layer($layer) {
+    // Document
+    //
+    // Change from `box-sizing: content-box` so that `width` is not affected by `padding` or `border`.
 
-:root {
-    font-size: $font-size-root;
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
 
-    @if $enable-smooth-scroll {
-        @media (prefers-reduced-motion: no-preference) {
-            scroll-behavior: smooth;
+    // Root
+    //
+    // Ability to the value of the root font sizes, affecting the value of `rem`.
+    // null by default, thus nothing is generated.
+
+    :root {
+        font-size: $font-size-root;
+
+        // 1. Opt into dark form controls and scrollbars, and let `light-dark()`
+        //    follow the user's preference. Set `color-scheme: light` on `:root`
+        //    to force light mode.
+        @if $enable-dark-mode {
+            color-scheme: light dark; // 1
+        }
+
+        @each $name, $values in $-colors {
+            $light: list.nth($values, 1);
+            $dark: list.nth($values, 2);
+
+            @if $light {
+                @if $enable-dark-mode and $dark {
+                    --#{$prefix}#{$name}: light-dark(#{$light}, #{$dark});
+                } @else {
+                    --#{$prefix}#{$name}: #{$light};
+                }
+            }
+        }
+
+        @if $enable-smooth-scroll {
+            @media (prefers-reduced-motion: no-preference) {
+                scroll-behavior: smooth;
+            }
         }
     }
-}
 
-// Body
-//
-// 1. Remove the margin in all browsers.
-// 2. As a best practice, apply a default `background-color`.
-// 3. Prevent adjustments of font size after orientation changes in iOS.
-// 4. Change the default tap highlight to be completely transparent in iOS.
+    // Body
+    //
+    // 1. Remove the margin in all browsers.
+    // 2. As a best practice, apply a default `background-color`.
+    // 3. Prevent adjustments of font size after orientation changes in iOS.
+    // 4. Change the default tap highlight to be completely transparent in iOS.
 
-body {
-    margin: 0; // 1
-    font-family: $font-family-base;
-    font-size: $font-size-base;
-    font-weight: $font-weight-base;
-    line-height: $line-height-base;
-    color: $body-color;
-    text-align: $body-text-align;
-    background-color: $body-bg; // 2
-    -webkit-text-size-adjust: 100%; // 3
-    text-size-adjust: 100%; // 3
-    -webkit-tap-highlight-color: transparent; // 4
-}
-
-// Content grouping
-//
-// 1. Reset Firefox's gray color
-// 2. Set correct height and prevent the `size` attribute to make the `hr` look like an input field
-
-hr {
-    margin: $hr-margin-y 0;
-    color: $hr-color; // 1
-    background-color: currentColor;
-    border: 0;
-    opacity: $hr-opacity;
-}
-
-hr:not([size]) {
-    height: $hr-height; // 2
-}
-
-// Typography
-//
-// 1. Remove top margins from headings
-//    By default, `<h1>`-`<h6>` all receive top and bottom margins. We nuke the top
-//    margin for easier control within type scales as it avoids margin collapsing.
-
-%heading {
-    margin-top: 0; // 1
-    margin-bottom: $headings-margin-bottom;
-    font-family: $headings-font-family;
-    font-style: $headings-font-style;
-    font-weight: $headings-font-weight;
-    line-height: $headings-line-height;
-    color: $headings-color;
-}
-
-h1 {
-    @extend %heading;
-    font-size: $h1-font-size;
-}
-
-h2 {
-    @extend %heading;
-    font-size: $h2-font-size;
-}
-
-h3 {
-    @extend %heading;
-    font-size: $h3-font-size;
-}
-
-h4 {
-    @extend %heading;
-    font-size: $h4-font-size;
-}
-
-h5 {
-    @extend %heading;
-    font-size: $h5-font-size;
-}
-
-h6 {
-    @extend %heading;
-    font-size: $h6-font-size;
-}
-
-// Reset margins on paragraphs
-//
-// Similarly, the top margin on `<p>`s get reset. However, we also reset the
-// bottom margin to use `rem` units instead of `em`.
-
-p {
-    margin-top: 0;
-    margin-bottom: $paragraph-margin-bottom;
-}
-
-// Abbreviations
-//
-// 1. Add the correct text decoration in Chrome, Edge, Opera, and Safari.
-// 2. Add explicit cursor to indicate changed behavior.
-// 3. Prevent the text-decoration to be skipped.
-
-abbr[title] {
-    text-decoration: underline dotted; // 1
-    cursor: help; // 2
-    text-decoration-skip-ink: none; // 3
-}
-
-// Address
-
-address {
-    margin-bottom: 1rem;
-    font-style: normal;
-    line-height: inherit;
-}
-
-// Lists
-
-ol,
-ul {
-    padding-left: 2rem;
-}
-
-ol,
-ul,
-dl {
-    margin-top: 0;
-    margin-bottom: 1rem;
-}
-
-ol ol,
-ul ul,
-ol ul,
-ul ol {
-    margin-bottom: 0;
-}
-
-dt {
-    font-weight: $dt-font-weight;
-}
-
-// 1. Undo browser default
-
-dd {
-    margin-bottom: 0.5rem;
-    margin-left: 0; // 1
-}
-
-// Blockquote
-
-blockquote {
-    margin: 0 0 1rem;
-}
-
-// Strong
-//
-// Add the correct font weight in Chrome, Edge, and Safari
-
-b,
-strong {
-    font-weight: $font-weight-bolder;
-}
-
-// Small
-//
-// Add the correct font size in all browsers
-
-small {
-    font-size: $small-font-size;
-}
-
-// Mark
-
-mark {
-    padding: $mark-padding;
-    background-color: $mark-bg;
-}
-
-// Sub and Sup
-//
-// Prevent `sub` and `sup` elements from affecting the line height in
-// all browsers.
-
-sub,
-sup {
-    position: relative;
-    font-size: $sub-sup-font-size;
-    line-height: 0;
-    vertical-align: baseline;
-}
-
-sub {
-    bottom: -0.25em;
-}
-
-sup {
-    top: -0.5em;
-}
-
-// Links
-
-a {
-    color: $link-color;
-    text-decoration: $link-decoration;
-
-    &:hover {
-        color: $link-hover-color;
-        text-decoration: $link-hover-decoration;
+    body {
+        margin: 0; // 1
+        font-family: $font-family-base;
+        font-size: $font-size-base;
+        font-weight: $font-weight-base;
+        line-height: $line-height-base;
+        color: -color("body-color");
+        text-align: $body-text-align;
+        background-color: -color("body-bg"); // 2
+        -webkit-text-size-adjust: 100%; // 3
+        text-size-adjust: 100%; // 3
+        -webkit-tap-highlight-color: transparent; // 4
     }
-}
 
-// And undo these styles for placeholder links/named anchors (without href).
-// It would be more straightforward to just use a[href] in previous block, but that
-// causes specificity issues in many other styles that are too complex to fix.
-// See https://github.com/twbs/bootstrap/issues/19402
+    // Content grouping
+    //
+    // 1. Reset Firefox's gray color
+    // 2. Set correct height and prevent the `size` attribute to make the `hr` look like an input field
 
-a:not([href]):not([class]) {
-    &,
-    &:hover {
-        color: inherit;
-        text-decoration: none;
+    hr {
+        margin: $hr-margin-y 0;
+        color: $hr-color; // 1
+        background-color: currentcolor;
+        border: 0;
+        opacity: $hr-opacity;
     }
-}
 
-// Code
+    hr:not([size]) {
+        height: $hr-height; // 2
+    }
 
-pre,
-code,
-kbd,
-samp {
-    font-family: $font-family-code;
-    font-size: 1em; // Correct the odd `em` font sizing in all browsers.
-    direction: ltr #{"/* rtl:ignore */"};
-    unicode-bidi: bidi-override;
-}
+    // Typography
+    //
+    // 1. Remove top margins from headings
+    //    By default, `<h1>`-`<h6>` all receive top and bottom margins. We nuke the top
+    //    margin for easier control within type scales as it avoids margin collapsing.
 
-// 1. Remove browser default top margin
-// 2. Reset browser default of `1em` to use `rem`s
-// 3. Don't allow content to break outside
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        margin-block: 0 $headings-margin-bottom; // 1
+        font-family: $headings-font-family;
+        font-style: $headings-font-style;
+        font-weight: $headings-font-weight;
+        line-height: $headings-line-height;
+        color: $headings-color;
+    }
 
-pre {
-    display: block;
-    margin-top: 0; // 1
-    margin-bottom: 1rem; // 2
-    overflow: auto; // 3
-    font-size: $code-font-size;
-    color: $pre-color;
+    h1 {
+        font-size: $h1-font-size;
+    }
 
-    // Account for some code outputs that place code tags in pre tags
+    h2 {
+        font-size: $h2-font-size;
+    }
+
+    h3 {
+        font-size: $h3-font-size;
+    }
+
+    h4 {
+        font-size: $h4-font-size;
+    }
+
+    h5 {
+        font-size: $h5-font-size;
+    }
+
+    h6 {
+        font-size: $h6-font-size;
+    }
+
+    // Reset margins on paragraphs
+    //
+    // Similarly, the top margin on `<p>`s get reset. However, we also reset the
+    // bottom margin to use `rem` units instead of `em`.
+
+    p {
+        margin-block: 0 $paragraph-margin-bottom;
+    }
+
+    // Abbreviations
+    //
+    // 1. Add the correct text decoration in Chrome, Edge, Opera, and Safari.
+    // 2. Add explicit cursor to indicate changed behavior.
+    // 3. Prevent the text-decoration to be skipped.
+
+    abbr[title] {
+        text-decoration: underline dotted; // 1
+        cursor: help; // 2
+        text-decoration-skip-ink: none; // 3
+    }
+
+    // Address
+
+    address {
+        margin-block-end: $block-margin-bottom;
+        font-style: normal;
+        line-height: inherit;
+    }
+
+    // Lists
+
+    ol,
+    ul {
+        padding-inline-start: $list-padding-inline-start;
+    }
+
+    ol,
+    ul,
+    dl {
+        margin-block: 0 $block-margin-bottom;
+    }
+
+    ol ol,
+    ul ul,
+    ol ul,
+    ul ol {
+        margin-block-end: 0;
+    }
+
+    dt {
+        font-weight: $dt-font-weight;
+    }
+
+    // 1. Undo browser default
+
+    dd {
+        margin-block-end: $dd-margin-bottom;
+        margin-inline-start: 0; // 1
+    }
+
+    // Blockquote
+
+    blockquote {
+        margin-block: 0 $block-margin-bottom;
+        margin-inline: 0;
+    }
+
+    // Strong
+    //
+    // Add the correct font weight in Chrome, Edge, and Safari
+
+    b,
+    strong {
+        font-weight: $font-weight-bolder;
+    }
+
+    // Small
+    //
+    // Add the correct font size in all browsers
+
+    small {
+        font-size: $small-font-size;
+    }
+
+    // Mark
+
+    mark {
+        padding: $mark-padding;
+        color: $mark-color;
+        background-color: -color("mark-bg");
+    }
+
+    // Sub and Sup
+    //
+    // Prevent `sub` and `sup` elements from affecting the line height in
+    // all browsers.
+
+    sub,
+    sup {
+        position: relative;
+        font-size: $sub-sup-font-size;
+        line-height: 0;
+        vertical-align: baseline;
+    }
+
+    sub {
+        bottom: -0.25em;
+    }
+
+    sup {
+        top: -0.5em;
+    }
+
+    // Links
+
+    a {
+        color: -color("link-color");
+        text-decoration: $link-decoration;
+
+        &:hover {
+            color: -color("link-hover-color");
+            text-decoration: $link-hover-decoration;
+        }
+    }
+
+    // And undo these styles for placeholder links/named anchors (without href).
+    // It would be more straightforward to just use a[href] in previous block, but that
+    // causes specificity issues in many other styles that are too complex to fix.
+    // See https://github.com/twbs/bootstrap/issues/19402
+
+    a:not([href], [class]) {
+        &,
+        &:hover {
+            color: inherit;
+            text-decoration: none;
+        }
+    }
+
+    // Code
+    //
+    // Code stays left-to-right in right-to-left documents.
+
+    pre,
+    code,
+    kbd,
+    samp {
+        font-family: $font-family-code;
+        font-size: 1em; // Correct the odd `em` font sizing in all browsers.
+        direction: ltr;
+        unicode-bidi: bidi-override;
+    }
+
+    // 1. Remove browser default top margin
+    // 2. Reset browser default of `1em` to use `rem`s
+    // 3. Don't allow content to break outside
+
+    pre {
+        display: block;
+        margin-block: 0 $block-margin-bottom; // 1, 2
+        overflow: auto; // 3
+        font-size: $code-font-size;
+        color: $pre-color;
+
+        // Account for some code outputs that place code tags in pre tags
+        code {
+            font-size: inherit;
+            color: inherit;
+            word-break: normal;
+        }
+    }
+
     code {
-        font-size: inherit;
-        color: inherit;
-        word-break: normal;
+        font-size: $code-font-size;
+        color: -color("code-color");
+        overflow-wrap: break-word;
+
+        // Streamline the style when inside anchors to avoid broken underline and more
+        a > & {
+            color: inherit;
+        }
     }
-}
-
-code {
-    font-size: $code-font-size;
-    color: $code-color;
-    word-wrap: break-word;
-
-    // Streamline the style when inside anchors to avoid broken underline and more
-    a > & {
-        color: inherit;
-    }
-}
-
-kbd {
-    padding: $kbd-padding-y $kbd-padding-x;
-    font-size: $kbd-font-size;
-    color: $kbd-color;
-    background-color: $kbd-bg;
-    border-radius: $kbd-border-radius;
 
     kbd {
-        padding: 0;
-        font-size: 1em;
-        font-weight: $nested-kbd-font-weight;
-    }
-}
+        padding: $kbd-padding-y $kbd-padding-x;
+        font-size: $kbd-font-size;
+        color: -color("kbd-color");
+        background-color: -color("kbd-bg");
+        border-radius: $kbd-border-radius;
 
-// Figures
-//
-// Apply a consistent margin strategy (matches our type styles).
-
-figure {
-    margin: 0 0 1rem;
-}
-
-// Images and content
-
-img,
-svg {
-    vertical-align: middle;
-}
-
-// Tables
-//
-// Prevent double borders
-
-table {
-    caption-side: bottom;
-    border-collapse: collapse;
-}
-
-caption {
-    padding-top: $table-cell-padding-y;
-    padding-bottom: $table-cell-padding-y;
-    color: $table-caption-color;
-    text-align: left;
-}
-
-// 1. Removes font-weight bold by inheriting
-// 2. Matches default `<td>` alignment by inheriting `text-align`.
-// 3. Fix alignment for Safari
-
-th {
-    font-weight: $table-th-font-weight; // 1
-    text-align: inherit; // 2
-    text-align: -webkit-match-parent; // 3
-}
-
-thead,
-tbody,
-tfoot,
-tr,
-td,
-th {
-    border-color: inherit;
-    border-style: solid;
-    border-width: 0;
-}
-
-// Forms
-//
-// 1. Allow labels to use `margin` for spacing.
-
-label {
-    display: inline-block; // 1
-}
-
-// Remove the default `border-radius` that macOS Chrome adds.
-// See https://github.com/twbs/bootstrap/issues/24093
-
-button {
-    // stylelint-disable-next-line property-disallowed-list
-    border-radius: 0;
-}
-
-// Explicitly remove focus outline in Chromium when it shouldn't be
-// visible (e.g. as result of mouse click or touch tap). It already
-// should be doing this automatically, but seems to currently be
-// confused and applies its very visible two-tone outline anyway.
-
-button:focus:not(:focus-visible) {
-    outline: 0;
-}
-
-// 1. Remove the margin in Firefox and Safari
-
-input,
-button,
-select,
-optgroup,
-textarea {
-    margin: 0; // 1
-    font-family: inherit;
-    font-size: inherit;
-    line-height: inherit;
-}
-
-// Remove the inheritance of text transform in Firefox
-
-button,
-select {
-    text-transform: none;
-}
-
-// Set the cursor for non-`<button>` buttons
-//
-// Details at https://github.com/twbs/bootstrap/pull/30562
-[role="button"] {
-    cursor: pointer;
-}
-
-select {
-    // Remove the inheritance of word-wrap in Safari.
-    // See https://github.com/twbs/bootstrap/issues/24990
-    word-wrap: normal;
-
-    // Undo the opacity change from Chrome
-    &:disabled {
-        opacity: 1;
-    }
-}
-
-// Remove the dropdown arrow in Chrome from inputs built with datalists.
-// See https://stackoverflow.com/a/54997118
-
-[list]::-webkit-calendar-picker-indicator {
-    display: none;
-}
-
-// 1. Correct the inability to style clickable types in iOS and Safari.
-// 2. Opinionated: add "hand" cursor to non-disabled button elements.
-
-button,
-[type="button"],
-[type="reset"],
-[type="submit"] {
-    -webkit-appearance: button; // 1
-
-    @if $enable-button-pointers {
-        &:not(:disabled) {
-            cursor: pointer; // 2
+        kbd {
+            padding: 0;
+            font-size: 1em;
+            font-weight: $nested-kbd-font-weight;
         }
     }
-}
 
-// Remove inner border and padding from Firefox, but don't restore the outline like Normalize.
+    // Figures
+    //
+    // Apply a consistent margin strategy (matches our type styles).
 
-::-moz-focus-inner {
-    padding: 0;
-    border-style: none;
-}
-
-// 1. Textareas should really only resize vertically so they don't break their (horizontal) containers.
-
-textarea {
-    resize: vertical; // 1
-}
-
-// 1. Browsers set a default `min-width: min-content;` on fieldsets,
-//    unlike e.g. `<div>`s, which have `min-width: 0;` by default.
-//    So we reset that to ensure fieldsets behave more like a standard block element.
-//    See https://github.com/twbs/bootstrap/issues/12359
-//    and https://html.spec.whatwg.org/multipage/#the-fieldset-and-legend-elements
-// 2. Reset the default outline behavior of fieldsets so they don't affect page layout.
-
-fieldset {
-    min-width: 0; // 1
-    padding: 0; // 2
-    margin: 0; // 2
-    border: 0; // 2
-}
-
-// 1. By using `float: left`, the legend will behave like a block element.
-//    This way the border of a fieldset wraps around the legend if present.
-// 2. Fix wrapping bug.
-//    See https://github.com/twbs/bootstrap/issues/29712
-
-legend {
-    float: left; // 1
-    width: 100%;
-    padding: 0;
-    margin-bottom: $legend-margin-bottom;
-    font-size: $legend-font-size;
-    font-weight: $legend-font-weight;
-    line-height: inherit;
-
-    + * {
-        clear: left; // 2
+    figure {
+        margin-block: 0 $block-margin-bottom;
+        margin-inline: 0;
     }
-}
 
-// Fix height of inputs with a type of datetime-local, date, month, week, or time
-// See https://github.com/twbs/bootstrap/issues/18842
+    // Images and content
 
-::-webkit-datetime-edit-fields-wrapper,
-::-webkit-datetime-edit-text,
-::-webkit-datetime-edit-minute,
-::-webkit-datetime-edit-hour-field,
-::-webkit-datetime-edit-day-field,
-::-webkit-datetime-edit-month-field,
-::-webkit-datetime-edit-year-field {
-    padding: 0;
-}
+    img,
+    svg {
+        vertical-align: middle;
+    }
 
-::-webkit-inner-spin-button {
-    height: auto;
-}
+    // Tables
+    //
+    // Prevent double borders
 
-// 1. Correct the outline style in Safari.
-// 2. This overrides the extra rounded corners on search inputs in iOS so that our
-//    `.form-control` class can properly style them. Note that this cannot simply
-//    be added to `.form-control` as it's not specific enough. For details, see
-//    https://github.com/twbs/bootstrap/issues/11586.
+    table {
+        caption-side: bottom;
+        border-collapse: collapse;
+    }
 
-[type="search"] {
-    outline-offset: -2px; // 1
-    -webkit-appearance: textfield; // 2
-}
+    caption {
+        padding-block: $table-cell-padding-y;
+        color: -color("table-caption-color");
+        text-align: start;
+    }
 
-// 1. A few input types should stay LTR
-// See https://rtlstyling.com/posts/rtl-styling#form-inputs
-// 2. RTL only output
-// See https://rtlcss.com/learn/usage-guide/control-directives/#raw
+    // 1. Removes font-weight bold by inheriting
+    // 2. Matches default `<td>` alignment by inheriting `text-align`.
+    // 3. Fix alignment for Safari
 
-/* rtl:raw:
-[type="tel"],
-[type="url"],
-[type="email"],
-[type="number"] {
-  direction: ltr;
-}
-*/
+    th {
+        font-weight: $table-th-font-weight; // 1
+        text-align: inherit; // 2
+        text-align: -webkit-match-parent; // 3
+    }
 
-// Remove the inner padding in Chrome and Safari on macOS.
+    thead,
+    tbody,
+    tfoot,
+    tr,
+    td,
+    th {
+        border-color: inherit;
+        border-style: solid;
+        border-width: 0;
+    }
 
-::-webkit-search-decoration {
-    -webkit-appearance: none;
-}
+    // Forms
+    //
+    // 1. Allow labels to use `margin` for spacing.
 
-// Remove padding around color pickers in webkit browsers
+    label {
+        display: inline-block; // 1
+    }
 
-::-webkit-color-swatch-wrapper {
-    padding: 0;
-}
+    // Remove the default `border-radius` that macOS Chrome adds.
+    // See https://github.com/twbs/bootstrap/issues/24093
 
-// Inherit font family and line height for file input buttons
+    button {
+        // stylelint-disable-next-line property-disallowed-list
+        border-radius: 0;
+    }
 
-::file-selector-button {
-    font: inherit;
-}
+    // Explicitly remove focus outline in Chromium when it shouldn't be
+    // visible (e.g. as result of mouse click or touch tap). It already
+    // should be doing this automatically, but seems to currently be
+    // confused and applies its very visible two-tone outline anyway.
 
-// 1. Change font properties to `inherit`
-// 2. Correct the inability to style clickable types in iOS and Safari.
+    button:focus:not(:focus-visible) {
+        outline: 0;
+    }
 
-::-webkit-file-upload-button {
-    font: inherit; // 1
-    -webkit-appearance: button; // 2
-}
+    // 1. Remove the margin in Firefox and Safari
 
-// Correct element displays
+    input,
+    button,
+    select,
+    optgroup,
+    textarea {
+        margin: 0; // 1
+        font-family: inherit;
+        font-size: inherit;
+        line-height: inherit;
+    }
 
-output {
-    display: inline-block;
-}
+    // Remove the inheritance of text transform in Firefox
 
-// Remove border from iframe
+    button,
+    select {
+        text-transform: none;
+    }
 
-iframe {
-    border: 0;
-}
+    // Set the cursor for non-`<button>` buttons
+    //
+    // Details at https://github.com/twbs/bootstrap/pull/30562
+    [role="button"] {
+        cursor: pointer;
+    }
 
-// Summary
-//
-// 1. Add the correct display in all browsers
+    select {
+        // Remove the inheritance of overflow-wrap in Safari.
+        // See https://github.com/twbs/bootstrap/issues/24990
+        overflow-wrap: normal;
 
-summary {
-    display: list-item; // 1
-    cursor: pointer;
-}
+        // Undo the opacity change from Chrome
+        &:disabled {
+            opacity: 1;
+        }
+    }
 
-// Progress
-//
-// Add the correct vertical alignment in Chrome, Firefox, and Opera.
+    // Remove the dropdown arrow in Chrome from inputs built with datalists.
+    // See https://stackoverflow.com/a/54997118
 
-progress {
-    vertical-align: baseline;
-}
+    [list]::-webkit-calendar-picker-indicator {
+        display: none;
+    }
 
-// Hidden attribute
-//
-// Always hide an element with the `hidden` HTML attribute.
+    // 1. Correct the inability to style clickable types in iOS and Safari.
+    // 2. Opinionated: add "hand" cursor to non-disabled button elements.
 
-[hidden] {
-    display: none !important;
+    button,
+    [type="button"],
+    [type="reset"],
+    [type="submit"] {
+        -webkit-appearance: button; // 1
+
+        @if $enable-button-pointers {
+            &:not(:disabled, [aria-disabled="true"]) {
+                cursor: pointer; // 2
+            }
+        }
+    }
+
+    // Remove inner border and padding from Firefox, but don't restore the outline like Normalize.
+
+    ::-moz-focus-inner {
+        padding: 0;
+        border-style: none;
+    }
+
+    // 1. Textareas should really only resize vertically so they don't break their (horizontal) containers.
+
+    textarea {
+        resize: vertical; // 1
+    }
+
+    // 1. Browsers set a default `min-width: min-content;` on fieldsets,
+    //    unlike e.g. `<div>`s, which have `min-width: 0;` by default.
+    //    So we reset that to ensure fieldsets behave more like a standard block element.
+    //    See https://github.com/twbs/bootstrap/issues/12359
+    //    and https://html.spec.whatwg.org/multipage/#the-fieldset-and-legend-elements
+    // 2. Reset the default outline behavior of fieldsets so they don't affect page layout.
+
+    fieldset {
+        min-width: 0; // 1
+        padding: 0; // 2
+        margin: 0; // 2
+        border: 0; // 2
+    }
+
+    // 1. By using `float: inline-start`, the legend will behave like a block element.
+    //    This way the border of a fieldset wraps around the legend if present.
+    // 2. Fix wrapping bug.
+    //    See https://github.com/twbs/bootstrap/issues/29712
+
+    legend {
+        float: inline-start; // 1
+        width: 100%;
+        padding: 0;
+        margin-block-end: $legend-margin-bottom;
+        font-size: $legend-font-size;
+        font-weight: $legend-font-weight;
+        line-height: inherit;
+
+        + * {
+            clear: inline-start; // 2
+        }
+    }
+
+    // Fix height of inputs with a type of datetime-local, date, month, week, or time
+    // See https://github.com/twbs/bootstrap/issues/18842
+
+    ::-webkit-datetime-edit-fields-wrapper,
+    ::-webkit-datetime-edit-text,
+    ::-webkit-datetime-edit-minute,
+    ::-webkit-datetime-edit-hour-field,
+    ::-webkit-datetime-edit-day-field,
+    ::-webkit-datetime-edit-month-field,
+    ::-webkit-datetime-edit-year-field {
+        padding: 0;
+    }
+
+    ::-webkit-inner-spin-button {
+        height: auto;
+    }
+
+    // 1. Correct the outline style in Safari.
+    // 2. This overrides the extra rounded corners on search inputs in iOS so that our
+    //    `.form-control` class can properly style them. Note that this cannot simply
+    //    be added to `.form-control` as it's not specific enough. For details, see
+    //    https://github.com/twbs/bootstrap/issues/11586.
+
+    [type="search"] {
+        outline-offset: -2px; // 1
+        -webkit-appearance: textfield; // 2
+        appearance: textfield; // 2
+    }
+
+    // A few input types should stay left-to-right in right-to-left documents.
+    // See https://rtlstyling.com/posts/rtl-styling#form-inputs
+
+    [type="tel"],
+    [type="url"],
+    [type="email"],
+    [type="number"] {
+        direction: ltr;
+    }
+
+    // Remove the inner padding in Chrome and Safari on macOS.
+
+    ::-webkit-search-decoration {
+        -webkit-appearance: none;
+    }
+
+    // Remove padding around color pickers in webkit browsers
+
+    ::-webkit-color-swatch-wrapper {
+        padding: 0;
+    }
+
+    // Inherit font family and line height for file input buttons
+
+    ::file-selector-button {
+        font: inherit;
+    }
+
+    // 1. Change font properties to `inherit`
+    // 2. Correct the inability to style clickable types in iOS and Safari.
+
+    ::-webkit-file-upload-button {
+        font: inherit; // 1
+        -webkit-appearance: button; // 2
+    }
+
+    // Correct element displays
+
+    output {
+        display: inline-block;
+    }
+
+    // Remove border from iframe
+
+    iframe {
+        border: 0;
+    }
+
+    // Summary
+    //
+    // 1. Add the correct display in all browsers
+
+    summary {
+        display: list-item; // 1
+        cursor: pointer;
+    }
+
+    // Progress
+    //
+    // Add the correct vertical alignment in Chrome, Firefox, and Opera.
+
+    progress {
+        vertical-align: baseline;
+    }
+
+    // Accessibility cursors
+    //
+    // Show the state that ARIA attributes and `disabled` describe, as
+    // sanitize.css does.
+
+    @if $enable-aria-cursors {
+        [aria-busy="true"] {
+            cursor: progress;
+        }
+
+        [aria-disabled="true"],
+        :disabled {
+            cursor: not-allowed;
+        }
+    }
+
+    // Reduced motion
+
+    @if $enable-reduced-motion {
+        @include mixins.reduced-motion;
+    }
+
+    // Hidden attribute
+    //
+    // Always hide an element with the `hidden` HTML attribute. `until-found` is
+    // left to the browser so find-in-page can still reveal it.
+
+    [hidden]:not([hidden="until-found"]) {
+        display: none !important;
+    }
 }

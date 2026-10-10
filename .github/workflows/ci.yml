@@ -1,0 +1,103 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+      - pro
+  pull_request:
+
+permissions:
+  contents: read
+
+
+jobs:
+
+
+# =============================================================================
+# Check: lint, unit and browser tests, build and test the packed package
+# =============================================================================
+
+  check:
+
+    name: Check
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - 
+        name: Checkout
+        uses: actions/checkout@v7
+
+      - 
+        name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22.x
+          cache: npm
+
+      - 
+        name: NPM Install
+        run: npm clean-install
+
+      - 
+        name: NPM Run Lint
+        run: npm run lint
+
+      - 
+        name: NPM Run Test
+        run: npm test
+
+      - 
+        name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium firefox webkit
+
+      - 
+        name: NPM Run Test Browser
+        run: npm run test:browser
+
+      - 
+        name: NPM Run Build
+        run: npm run build
+
+      - 
+        name: NPM Run Test Package
+        run: npm run test:package
+
+
+# =============================================================================
+# Auto-merge Dependabot PRs once the checks pass
+# =============================================================================
+
+  dependabot:
+
+    name: Dependabot Auto-Merge
+
+    needs: check
+
+    if: ${{ github.event_name == 'pull_request' && github.actor == 'dependabot[bot]' }}
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+
+      - 
+        name: Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v3
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+
+      - 
+        name: Auto-merge changes from Dependabot
+        if: steps.metadata.outputs.update-type != 'version-update:semver-major' || steps.metadata.outputs.package-ecosystem == 'github_actions'
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

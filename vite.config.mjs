@@ -15,7 +15,6 @@ const pathToStylescapeCss = path.resolve(rootDir, 'node_modules', 'stylescape', 
 // Sources that trigger a rebuild when they change
 const watchGlobs = [
     'src/scss/**/*',
-    'src/ts/**/*',
     'exe/**/*',
     'kist.yml',
 ];

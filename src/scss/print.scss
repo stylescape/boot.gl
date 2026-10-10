@@ -1,0 +1,103 @@
+////
+///
+/// Print Module
+/// ===========================================================================
+///
+/// Opt-in print styles, adapted from HTML5 Boilerplate (MIT). Everything
+/// sits inside `@media print`, so the file can be loaded on every page:
+///
+///     <link rel="stylesheet" href="boot.gl/css/print.css">
+///     @use "pkg:boot.gl/scss/print" with ($show-link-urls: false);
+///
+/// @group Print
+/// @author Scape Press
+/// @link https://boot.gl
+/// @since 0.1.0 initial release
+/// @access public
+///
+////
+
+// stylelint-disable declaration-no-important
+
+@use "mixins";
+
+// ============================================================================
+// Settings
+// ============================================================================
+
+/// Cascade layer to wrap the stylesheet in; `null` emits it unlayered.
+$layer: null !default;
+
+/// Print the URL after each link, and the expansion after each abbreviation.
+$show-link-urls: true !default;
+
+// ============================================================================
+// Print
+// ============================================================================
+
+@include mixins.layer($layer) {
+    @media print {
+        // Black text on white saves ink and prints legibly
+        *,
+        ::before,
+        ::after {
+            background: #fff !important;
+            color: #000 !important;
+            box-shadow: none !important;
+            text-shadow: none !important;
+        }
+
+        a,
+        a:visited {
+            text-decoration: underline;
+        }
+
+        @if $show-link-urls {
+            a[href]::after {
+                content: " (" attr(href) ")";
+            }
+
+            abbr[title]::after {
+                content: " (" attr(title) ")";
+            }
+
+            // In-page and script links mean nothing on paper
+            a[href^="#"]::after,
+            a[href^="javascript:"]::after {
+                content: "";
+            }
+        }
+
+        pre {
+            white-space: pre-wrap !important;
+        }
+
+        pre,
+        blockquote {
+            border: 1px solid #999;
+            break-inside: avoid;
+        }
+
+        tr,
+        img {
+            break-inside: avoid;
+        }
+
+        // Repeat the table header on every printed page
+        thead {
+            display: table-header-group;
+        }
+
+        h2,
+        h3 {
+            break-after: avoid;
+        }
+
+        p,
+        h2,
+        h3 {
+            orphans: 3;
+            widows: 3;
+        }
+    }
+}

@@ -30,7 +30,9 @@ nav:
   - Specifications:
       - 'Overview': 'specifications/index.md'
       - 'Features': 'specifications/features.md'
+      - 'Comparison': 'specifications/comparison.md'
       - 'Stylesheets': 'specifications/stylesheets.md'
+      - 'Reset Settings': 'specifications/reset_settings.md'
       - 'Reboot Settings': 'specifications/reboot_settings.md'
   - Resources:
       - 'Glossary': 'resources/glossary.md'

@@ -3,15 +3,17 @@
 /// boot.gl
 /// ===========================================================================
 ///
+/// The hard reset and its mixins. To use the mixins without emitting the
+/// reset, load `pkg:boot.gl/scss/mixins` instead.
+///
 /// @author Scape Press
 /// @link https://boot.gl
 /// @since 0.1.0 initial release
-/// @todo None
 /// @access public
 ///
 ////
 
 
 @charset "utf-8";
-
+@forward "mixins";
 @forward "reset";

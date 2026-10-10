@@ -1,0 +1,58 @@
+////
+///
+/// Mixins Module
+/// ===========================================================================
+///
+/// Mixins shared by the stylesheets. Loading this module emits no CSS:
+///
+///     @use "pkg:boot.gl/scss/mixins" as boot;
+///
+/// @group Mixins
+/// @author Scape Press
+/// @link https://boot.gl
+/// @since 0.1.0 initial release
+/// @access public
+///
+////
+
+/// Strip the box model and typography of an element back to zero.
+/// `margin` and `padding` also clear their logical (`-block-*`/`-inline-*`)
+/// longhands, and the `font` shorthand resets `font-size` with the rest.
+/// Sass treats `-` and `_` alike, so `reset_bleed` works too.
+@mixin reset-bleed {
+    margin: 0;
+    padding: 0;
+    border: 0; // Ensures no borders are applied unless explicitly defined
+    font: inherit; // Ensures fonts are consistently inherited from parent elements
+    vertical-align: baseline; // Aligns elements to the baseline to avoid layout shifts
+}
+
+/// Stop animations, transitions and smooth scrolling for users who ask the
+/// system for reduced motion. Animations still run once and fire their
+/// events, they just finish instantly.
+@mixin reduced-motion {
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        ::before,
+        ::after {
+            animation-duration: 0.01ms !important; // stylelint-disable-line declaration-no-important
+            animation-iteration-count: 1 !important; // stylelint-disable-line declaration-no-important
+            scroll-behavior: auto !important; // stylelint-disable-line declaration-no-important
+            transition-duration: 0.01ms !important; // stylelint-disable-line declaration-no-important
+        }
+    }
+}
+
+/// Wrap the content in a cascade layer, or emit it as is when `$name` is
+/// `null`. Styles in a layer lose to every unlayered author style.
+/// @param {String | Null} $name - Layer name, e.g. `boot` or `base.reset`
+@mixin layer($name) {
+    @if $name {
+        // stylelint-disable-next-line layer-name-pattern
+        @layer #{$name} {
+            @content;
+        }
+    } @else {
+        @content;
+    }
+}
