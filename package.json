@@ -43,7 +43,7 @@
         "node": ">=20.19.0"
     },
     "devDependencies": {
-        "@getkist/action-nunjucks": "^2.0.28",
+        "@getkist/action-nunjucks": "^2.0.33",
         "@getkist/action-sass": "^1.0.4",
         "@playwright/test": "^1.64.1",
         "kist": "^0.1.81",
