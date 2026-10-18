@@ -45,7 +45,7 @@
     "devDependencies": {
         "@getkist/action-nunjucks": "^2.0.28",
         "@getkist/action-sass": "^1.0.4",
-        "@playwright/test": "^1.64.0",
+        "@playwright/test": "^1.64.1",
         "kist": "^0.1.81",
         "micromatch": "^4.0.8",
         "modern-normalize": "^3.0.1",
