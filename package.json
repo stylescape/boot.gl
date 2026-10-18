@@ -55,7 +55,7 @@
         "serve-static": "^2.2.1",
         "stylelint": "^17.16.0",
         "stylelint-config-standard-scss": "^17.0.0",
-        "stylescape": "^0.4.1",
+        "stylescape": "^0.5.2",
         "vite": "^8.3.3"
     },
     "files": [
