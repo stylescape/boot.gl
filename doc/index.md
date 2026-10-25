@@ -24,5 +24,4 @@ libraries on the [Comparison](specifications/comparison.md) page.
 
 Get started with the [Quick Start](quick_start.md).
 
-
 **boot.gl** is an open-source project by [Scape Press](https://www.scape.press "Scape Press website").

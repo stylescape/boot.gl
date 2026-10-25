@@ -135,3 +135,11 @@ improvement and comparison passes of 2026-10-09. Open follow-ups are in `TODO.md
 - `.npmignore`: it had no effect, because the package is published from
   `dist/` with an explicit `files` list (`npm pack --dry-run` in `dist/`
   lists the same 13 files without it).
+
+## [0.0.2] - 2026-02-09
+
+### Added
+
+- A `dist/` build (`css/boot.gl.css`, `boot.gl.min.css` and the SCSS
+  sources) and a production pipeline. The published npm package held only
+  LICENSE, README and `package.json` (fixed under [Unreleased])

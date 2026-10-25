@@ -15,7 +15,7 @@ A setting whose default is `null` generates no declaration until you set
 it. Sass replaces a `null` passed to `with` by the default value, so to drop
 one of the colours below, set it to `false`.
 
-### Options
+## Options
 
 | Setting | Default |
 | --- | --- |
@@ -27,14 +27,14 @@ one of the colours below, set it to `false`.
 | `$enable-reduced-motion` | `true` (animations and transitions finish instantly under `prefers-reduced-motion: reduce`) |
 | `$enable-aria-cursors` | `true` (`progress` cursor on `[aria-busy="true"]`, `not-allowed` on `[aria-disabled="true"]` and `:disabled`) |
 
-### Spacing
+## Spacing
 
 | Setting | Default |
 | --- | --- |
 | `$spacer` | `1rem` |
 | `$block-margin-bottom` | `$spacer` (address, lists, blockquote, pre, figure) |
 
-### Typography
+## Typography
 
 | Setting | Default |
 | --- | --- |
@@ -48,7 +48,7 @@ one of the colours below, set it to `false`.
 | `$font-weight-bolder` | `bolder` |
 | `$line-height-base` | `1.5` |
 
-### Body
+## Body
 
 | Setting | Default |
 | --- | --- |
@@ -58,7 +58,7 @@ one of the colours below, set it to `false`.
 | `$body-bg-dark` | `#212529` |
 | `$body-text-align` | `null` |
 
-### Headings
+## Headings
 
 | Setting | Default |
 | --- | --- |
@@ -75,7 +75,7 @@ one of the colours below, set it to `false`.
 | `$h5-font-size` | `$font-size-base * 1.25` |
 | `$h6-font-size` | `$font-size-base` |
 
-### Text
+## Text
 
 | Setting | Default |
 | --- | --- |
@@ -90,7 +90,7 @@ one of the colours below, set it to `false`.
 | `$mark-bg` | `#fff3cd` |
 | `$mark-bg-dark` | `#664d03` |
 
-### Links
+## Links
 
 | Setting | Default |
 | --- | --- |
@@ -101,7 +101,7 @@ one of the colours below, set it to `false`.
 | `$link-hover-color-dark` | `#8bb9fe` |
 | `$link-hover-decoration` | `null` |
 
-### Horizontal rules
+## Horizontal rules
 
 | Setting | Default |
 | --- | --- |
@@ -110,7 +110,7 @@ one of the colours below, set it to `false`.
 | `$hr-opacity` | `0.25` |
 | `$hr-height` | `1px` |
 
-### Code
+## Code
 
 | Setting | Default |
 | --- | --- |
@@ -128,7 +128,7 @@ one of the colours below, set it to `false`.
 | `$kbd-border-radius` | `0.25rem` |
 | `$nested-kbd-font-weight` | `null` |
 
-### Tables
+## Tables
 
 | Setting | Default |
 | --- | --- |
@@ -137,7 +137,7 @@ one of the colours below, set it to `false`.
 | `$table-caption-color-dark` | `#adb5bd` |
 | `$table-th-font-weight` | `null` |
 
-### Forms
+## Forms
 
 | Setting | Default |
 | --- | --- |

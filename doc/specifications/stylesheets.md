@@ -1,11 +1,11 @@
 # Stylesheets
 
-| Baseline  | CSS                                  | Sass entry point   |
-| --------- | ------------------------------------ | ------------------ |
-| Reset     | `css/boot.gl.css`, `css/boot.gl.min.css`     | `scss/index.scss`     |
+| Baseline | CSS | Sass entry point |
+| --- | --- | --- |
+| Reset | `css/boot.gl.css`, `css/boot.gl.min.css` | `scss/index.scss` |
 | Normalize | `css/normalize.css`, `css/normalize.min.css` | `scss/normalize.scss` |
-| Reboot    | `css/reboot.css`, `css/reboot.min.css`       | `scss/reboot.scss`    |
-| Print     | `css/print.css`, `css/print.min.css`         | `scss/print.scss`     |
+| Reboot | `css/reboot.css`, `css/reboot.min.css` | `scss/reboot.scss` |
+| Print | `css/print.css`, `css/print.min.css` | `scss/print.scss` |
 
 Pick one of reset, normalize and reboot; print works with any of them. If
 you are unsure, use the reboot. The [Comparison](comparison.md) page puts
